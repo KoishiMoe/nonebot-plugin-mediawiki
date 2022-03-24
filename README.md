@@ -1,5 +1,29 @@
+<p align="center">
+  <a href="https://v2.nonebot.dev/"><img src="https://v2.nonebot.dev/logo.png" width="200" height="200" alt="nonebot"></a>
+</p>
+
+<div align="center">
+
 # nonebot-plugin-mediawiki
-适用于 nonebot2 的 MediaWiki 查询插件
+
+_适用于 [NoneBot2](https://v2.nonebot.dev) 的 MediaWiki 查询插件_
+
+</div>
+
+------
+
+![Python](https://img.shields.io/badge/python-3.8%2B-lightgrey)
+![nonebot2](https://img.shields.io/badge/nonebot2-2.0.0b2-yellowgreen)
+[![GitHub license](https://img.shields.io/github/license/KoishiStudio/nonebot-plugin-mediawiki)](https://github.com/KoishiStudio/nonebot-plugin-mediawiki/blob/main/LICENSE)
+[![pypi](https://img.shields.io/pypi/v/nonebot-plugin-mediawiki?color=blue)](https://pypi.org/project/nonebot-plugin-mediawiki/)
+
+[![GitHub issues](https://img.shields.io/github/issues/KoishiStudio/nonebot-plugin-mediawiki)](https://github.com/KoishiStudio/nonebot-plugin-mediawiki/issues)
+[![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/KoishiStudio/nonebot-plugin-mediawiki?include_prereleases)](https://github.com/KoishiStudio/nonebot-plugin-mediawiki/releases)
+[![GitHub all releases downloads](https://img.shields.io/github/downloads/KoishiStudio/nonebot-plugin-mediawiki/total)](https://github.com/KoishiStudio/nonebot-plugin-mediawiki/releases)
+![GitHub contributors](https://img.shields.io/github/contributors/KoishiStudio/nonebot-plugin-mediawiki)
+![GitHub Repo stars](https://img.shields.io/github/stars/KoishiStudio/nonebot-plugin-mediawiki?style=social)
+
+------
 
 本项目是 [Flandre](https://github.com/KoishiStudio/Flandre) 的
 [wiki](https://github.com/KoishiStudio/Flandre/tree/main/src/plugins/wiki) 组件，经简单修改成为独立插件发布
@@ -87,8 +111,10 @@ Tip：如果api返回的结果不是你想要的，可以使用半角小括号�
   * 语法 `wiki.default`
     * 参数：
       * 前缀：要设置默认的wiki的前缀
+  ```plaintext
+  Tip：本群/全局绑定的的一个wiki将被自动设置为本地/全局的默认wiki,当本地/全局绑定的默认wiki被删除时会自动清除对应的默认wiki设置，无需手动操作。
+  ```
 
-本群/全局绑定的的一个wiki将被自动设置为本地/全局的默认wiki,当本地/全局绑定的默认wiki被删除时会自动清除对应的默认wiki设置，无需手动操作。
 
 #### 全局管理
 
