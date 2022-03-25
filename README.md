@@ -16,10 +16,10 @@ _适用于 [NoneBot2](https://v2.nonebot.dev) 的 MediaWiki 查询插件_
 ![nonebot2](https://img.shields.io/badge/nonebot2-2.0.0b2-yellowgreen)
 [![GitHub license](https://img.shields.io/github/license/KoishiStudio/nonebot-plugin-mediawiki)](https://github.com/KoishiStudio/nonebot-plugin-mediawiki/blob/main/LICENSE)
 [![pypi](https://img.shields.io/pypi/v/nonebot-plugin-mediawiki?color=blue)](https://pypi.org/project/nonebot-plugin-mediawiki/)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/nonebot-plugin-mediawiki)
 
 [![GitHub issues](https://img.shields.io/github/issues/KoishiStudio/nonebot-plugin-mediawiki)](https://github.com/KoishiStudio/nonebot-plugin-mediawiki/issues)
 [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/KoishiStudio/nonebot-plugin-mediawiki?include_prereleases)](https://github.com/KoishiStudio/nonebot-plugin-mediawiki/releases)
-[![GitHub all releases downloads](https://img.shields.io/github/downloads/KoishiStudio/nonebot-plugin-mediawiki/total)](https://github.com/KoishiStudio/nonebot-plugin-mediawiki/releases)
 ![GitHub contributors](https://img.shields.io/github/contributors/KoishiStudio/nonebot-plugin-mediawiki)
 ![GitHub Repo stars](https://img.shields.io/github/stars/KoishiStudio/nonebot-plugin-mediawiki?style=social)
 
