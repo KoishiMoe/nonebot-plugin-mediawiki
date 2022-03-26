@@ -46,8 +46,8 @@ async def wiki_parse(pattern: str, is_template: bool, is_raw: bool, bot: Bot, ev
     msg = str(event.message).strip()
     msg = utils.unescape(msg)  # 将消息处理为正常格式，以防搜索出错
     temp_config: Config = Config(event.group_id)
-    titles = re.findall(pattern, msg)
-    for title in titles:
+    tmp_titles = re.findall(pattern, msg)
+    for title in tmp_titles:
         title = str(title)
         prefix = re.match(r'\w+:|\w+：', title)
         if not prefix:

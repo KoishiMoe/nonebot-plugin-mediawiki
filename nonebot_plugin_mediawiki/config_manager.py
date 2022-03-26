@@ -83,6 +83,7 @@ async def _add_wiki_url(bot: Bot, event: MessageEvent, state: T_State):
 
 list_wiki = on_command("wiki.list")
 
+
 @list_wiki.handle()
 async def _list_wiki(bot: Bot, event: MessageEvent, state: T_State):
     msg = str(event.message).strip().removeprefix("wiki.list")
