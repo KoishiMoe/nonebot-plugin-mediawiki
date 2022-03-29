@@ -55,9 +55,10 @@ class Mwapi:
         except TimeoutError:
             await session.close()
             raise HTTPTimeoutError(query='')
-        resp_dict = await resp.json()
 
         await session.close()
+
+        resp_dict = await resp.json()
 
         return resp_dict
 

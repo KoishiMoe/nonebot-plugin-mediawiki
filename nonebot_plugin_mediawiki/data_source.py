@@ -29,7 +29,7 @@ class Wiki:
             result_dict = await mediawiki.get_page_info(title)
         except HTTPTimeoutError:
             exception = "连接超时"
-        except (MediaWikiException, MediaWikiGeoCoordError, ContentTypeError) as e:
+        except (MediaWikiException, MediaWikiGeoCoordError, ContentTypeError) as e:  # ContentTypeError：非json内容
             exception = "Api调用出错"
             nonebot.logger.warning(e)
         except PageError:
