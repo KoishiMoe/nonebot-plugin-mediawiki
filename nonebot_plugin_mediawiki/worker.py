@@ -1,4 +1,5 @@
 import re
+from typing import Optional
 
 from nonebot import Type
 from nonebot.adapters.onebot.v11 import Bot, utils, GroupMessageEvent, Message
@@ -47,7 +48,8 @@ async def wiki_process(bot: Bot, event: GroupMessageEvent, wiki: Type[Matcher], 
         titles = []
 
 
-async def wiki_parse(pattern: str, is_template: bool, is_raw: bool, bot: Bot, event: GroupMessageEvent) -> tuple | None:
+async def wiki_parse(pattern: str, is_template: bool, is_raw: bool, bot: Bot, event: GroupMessageEvent) \
+        -> Optional[tuple]:
     msg = str(event.message).strip()
     msg = utils.unescape(msg)  # 将消息处理为正常格式，以防搜索出错
     temp_config: Config = Config(event.group_id)
