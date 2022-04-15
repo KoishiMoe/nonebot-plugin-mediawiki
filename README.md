@@ -14,19 +14,19 @@ _适用于 [NoneBot2](https://v2.nonebot.dev) 的 MediaWiki 查询插件_
 
 ![Python](https://img.shields.io/badge/python-3.8%2B-lightgrey)
 ![nonebot2](https://img.shields.io/badge/nonebot2-2.0.0b2-yellowgreen)
-[![GitHub license](https://img.shields.io/github/license/KoishiStudio/nonebot-plugin-mediawiki)](https://github.com/KoishiStudio/nonebot-plugin-mediawiki/blob/main/LICENSE)
+[![GitHub license](https://img.shields.io/github/license/KoishiMoe/nonebot-plugin-mediawiki)](https://github.com/KoishiMoe/nonebot-plugin-mediawiki/blob/main/LICENSE)
 [![pypi](https://img.shields.io/pypi/v/nonebot-plugin-mediawiki?color=blue)](https://pypi.org/project/nonebot-plugin-mediawiki/)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/nonebot-plugin-mediawiki)
 
-[![GitHub issues](https://img.shields.io/github/issues/KoishiStudio/nonebot-plugin-mediawiki)](https://github.com/KoishiStudio/nonebot-plugin-mediawiki/issues)
-[![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/KoishiStudio/nonebot-plugin-mediawiki?include_prereleases)](https://github.com/KoishiStudio/nonebot-plugin-mediawiki/releases)
-![GitHub contributors](https://img.shields.io/github/contributors/KoishiStudio/nonebot-plugin-mediawiki)
-![GitHub Repo stars](https://img.shields.io/github/stars/KoishiStudio/nonebot-plugin-mediawiki?style=social)
+[![GitHub issues](https://img.shields.io/github/issues/KoishiMoe/nonebot-plugin-mediawiki)](https://github.com/KoishiMoe/nonebot-plugin-mediawiki/issues)
+[![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/KoishiMoe/nonebot-plugin-mediawiki?include_prereleases)](https://github.com/KoishiMoe/nonebot-plugin-mediawiki/releases)
+![GitHub contributors](https://img.shields.io/github/contributors/KoishiMoe/nonebot-plugin-mediawiki)
+![GitHub Repo stars](https://img.shields.io/github/stars/KoishiMoe/nonebot-plugin-mediawiki?style=social)
 
 ------
 
-本项目是 [Flandre](https://github.com/KoishiStudio/Flandre) 的
-[wiki](https://github.com/KoishiStudio/Flandre/tree/main/src/plugins/wiki) 组件，经简单修改成为独立插件发布
+本项目是 [Flandre](https://github.com/KoishiMoe/Flandre) 的
+[wiki](https://github.com/KoishiMoe/Flandre/tree/main/src/plugins/wiki) 组件，经简单修改成为独立插件发布
 
 ## 用途
 一般来说最需要wikibot的大概是一些wiki项目的交流群，不过鉴于这种群通常都有大佬在，写个bot自然不是什么难事的说～

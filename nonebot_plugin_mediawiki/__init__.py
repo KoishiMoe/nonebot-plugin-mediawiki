@@ -20,7 +20,7 @@ __usage__ = '使用：\n' \
             '设置默认：wiki.default，wiki.default.global\n' \
             '按提示提供相应参数即可\n' \
             '注意：私聊状态下该插件仅会响应超管的命令，且仅能管理全局wiki\n' \
-            '完整文档请前往 https://github.com/KoishiStudio/nonebot-plugin-mediawiki 查看'
+            '完整文档请前往 https://github.com/KoishiMoe/nonebot-plugin-mediawiki 查看'
 
 __help_version__ = '0.1.2'
 
