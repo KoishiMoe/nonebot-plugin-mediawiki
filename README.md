@@ -1,8 +1,5 @@
-<p align="center">
+<div style="text-align: center;">
   <a href="https://v2.nonebot.dev/"><img src="https://v2.nonebot.dev/logo.png" width="200" height="200" alt="nonebot"></a>
-</p>
-
-<div align="center">
 
 # nonebot-plugin-mediawiki
 
@@ -41,11 +38,13 @@ _适用于 [NoneBot2](https://v2.nonebot.dev) 的 MediaWiki 查询插件_
 
 ### TL;DR
 
-查询条目： `[[条目名]]`
+查询条目： `[[条目名]]` `[[prefix:条目名]]`
 
-查询模板： `[[模板名]]`
+查询条目（方法2）： `wiki 条目名` `wiki prefix:条目名`
 
-绕过api查询条目： `((条目名))`
+查询模板： `{{模板名}}` `{{prefix:模板名}}`
+
+绕过api查询条目： `((条目名))` `((prefix:条目名))`
 
 添加（全局）Wiki： `wiki.add` `wiki.add.global`
 
@@ -63,7 +62,11 @@ _适用于 [NoneBot2](https://v2.nonebot.dev) 的 MediaWiki 查询插件_
 
 使用半角中括号包裹要查询的条目名，如 `[[帮助]]`
 
-使用半角大括号包裹要查询的模板名，如 `{{测试模板}}`
+使用半角大括号包裹要查询的模板名，如 `{{测试模板}}` 
+
+（PS：直接使用`[[Template:模板名]]`也是可行的）
+
+此外，方便起见，也可以用`wiki 条目名` `wiki prefix:条目名`的方法查询
 
 Bot会尝试去调取目标wiki的api,并获取对应标题的页面信息（默认允许重定向、跨wiki、简繁转换）。如果未找到对应条目，或者对应页面是消歧义页面，
 则会提供数字来选择。如果调用api失败或者未配置api，会回落到字符串拼接的方式生成链接。
