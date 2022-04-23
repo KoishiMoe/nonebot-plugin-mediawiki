@@ -1,5 +1,5 @@
-from nonebot import on_regex
-from nonebot.adapters.onebot.v11 import Bot, GroupMessageEvent
+from nonebot import on_regex, on_command
+from nonebot.adapters.onebot.v11 import Bot, GroupMessageEvent, Message
 from nonebot.adapters.onebot.v11.permission import GROUP
 
 from . import config_manager
@@ -10,6 +10,7 @@ from .worker import *
 
 # 接入帮助系统
 __usage__ = '使用：\n' \
+            '快速使用：wiki 前缀:条目名\n' \
             '[[前缀:条目名]] {{前缀:模板名}} ((前缀:条目名))\n' \
             '其中中括号、大括号匹配后会调用api搜索条目/模板名，如果有误，可以使用小括号方式绕过api直接生成链接\n' \
             '前缀由群管和bot超管配置，没有指定前缀或前缀无效时，会回落到默认前缀\n' \
@@ -36,6 +37,7 @@ RAW = r"\(\((.*?)\)\)"
 wiki = on_regex(ARTICLE_RAW, permission=GROUP)
 wiki_template = on_regex(TEMPLATE, permission=GROUP)
 wiki_raw = on_regex(RAW, permission=GROUP)
+wiki_quick = on_command("wiki", permission=GROUP, priority=2)  # 设个更低的优先级，省着和设置管理器抢（虽然似乎不设也不会抢2333
 
 
 @wiki.handle()
@@ -53,3 +55,10 @@ async def _wiki_raw(bot: Bot, event: GroupMessageEvent):
     special, result = await wiki_parse(RAW, False, True, bot, event)
     await bot.send(event, result)
 
+
+@wiki_quick.handle()
+async def _wiki_quick(bot: Bot, event: GroupMessageEvent):
+    message = str(event.message).strip().removeprefix("wiki").strip()
+    event2 = event.copy()  # 浅拷贝一下，省着篡改消息后把其他插件弄懵了～
+    event2.message = Message("[[" + message + "]]")
+    await wiki_process(bot, event2, wiki_quick, is_template=False)
