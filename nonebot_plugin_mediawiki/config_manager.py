@@ -7,6 +7,7 @@ from nonebot.adapters.onebot.v11.permission import GROUP_OWNER, GROUP_ADMIN
 from nonebot.permission import SUPERUSER
 from nonebot.typing import T_State
 from nonebot.internal.matcher import Matcher
+from nonebot.params import RawCommand
 
 from .config import Config
 from .mwapi import Mwapi
@@ -18,8 +19,8 @@ add_wiki = on_command("wiki.add", permission=SUPERUSER | GROUP_ADMIN | GROUP_OWN
 
 
 @add_wiki.handle()
-async def _add_wiki(bot: Bot, event: MessageEvent, state: T_State):
-    msg = str(event.message).strip().removeprefix("wiki.add")
+async def _add_wiki(bot: Bot, event: MessageEvent, state: T_State, raw_command: str = RawCommand()):
+    msg = str(event.message).strip().removeprefix(raw_command).strip()
     state["global"] = msg == ".global"
 
     if state["global"] and str(event.user_id) not in BotConfig.superusers:
@@ -85,8 +86,8 @@ list_wiki = on_command("wiki.list")
 
 
 @list_wiki.handle()
-async def _list_wiki(bot: Bot, event: MessageEvent, state: T_State):
-    msg = str(event.message).strip().removeprefix("wiki.list")
+async def _list_wiki(bot: Bot, event: MessageEvent, state: T_State, raw_command: str = RawCommand()):
+    msg = str(event.message).strip().removeprefix(raw_command).strip()
     is_global = msg == ".global"
 
     if is_global:
@@ -101,8 +102,8 @@ del_wiki = on_command("wiki.delete", permission=SUPERUSER | GROUP_ADMIN | GROUP_
 
 
 @del_wiki.handle()
-async def _del_wiki(bot: Bot, event: MessageEvent, state: T_State):
-    msg = str(event.message).strip().removeprefix("wiki.delete")
+async def _del_wiki(bot: Bot, event: MessageEvent, state: T_State, raw_command: str = RawCommand()):
+    msg = str(event.message).strip().removeprefix(raw_command).strip()
 
     await __check_params(msg=msg, event=event, state=state, matcher=del_wiki)
 
@@ -121,8 +122,8 @@ set_default = on_command("wiki.default", permission=SUPERUSER | GROUP_ADMIN | GR
 
 
 @set_default.handle()
-async def _set_default(bot: Bot, event: MessageEvent, state: T_State):
-    msg = str(event.message).strip().removeprefix("wiki.default")
+async def _set_default(bot: Bot, event: MessageEvent, state: T_State, raw_command: str = RawCommand()):
+    msg = str(event.message).strip().removeprefix(raw_command).strip()
 
     await __check_params(msg=msg, event=event, state=state, matcher=set_default)
 
