@@ -1,3 +1,5 @@
+from typing import Optional
+
 from nonebot import on_regex, on_command
 from nonebot.adapters.onebot.v11 import Bot, GroupMessageEvent, Message
 from nonebot.adapters.onebot.v11.permission import GROUP
@@ -58,7 +60,7 @@ async def _wiki_raw(bot: Bot, event: GroupMessageEvent):
 
 
 @wiki_quick.handle()
-async def _wiki_quick(bot: Bot, event: GroupMessageEvent, raw_command: str | None = RawCommand()):
+async def _wiki_quick(bot: Bot, event: GroupMessageEvent, raw_command: Optional[str] = RawCommand()):
     if raw_command and raw_command.endswith("wiki"):  # 防止选择式的消息及无关消息被误加括号
         message = str(event.message).strip().removeprefix(raw_command).strip()
         event2 = event.copy()  # 浅拷贝一下，省着篡改消息后把其他插件弄懵了～
