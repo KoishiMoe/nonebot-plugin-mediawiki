@@ -12,6 +12,8 @@ _适用于 [NoneBot2](https://v2.nonebot.dev) 的 MediaWiki 查询插件_
 
 ------
 
+<div align="center">
+
 ![Python](https://img.shields.io/badge/python-3.8%2B-lightgrey)
 ![nonebot2](https://img.shields.io/badge/nonebot2-2.0.0b2-yellowgreen)
 [![GitHub license](https://img.shields.io/github/license/KoishiMoe/nonebot-plugin-mediawiki)](https://github.com/KoishiMoe/nonebot-plugin-mediawiki/blob/main/LICENSE)
@@ -22,6 +24,8 @@ _适用于 [NoneBot2](https://v2.nonebot.dev) 的 MediaWiki 查询插件_
 [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/KoishiMoe/nonebot-plugin-mediawiki?include_prereleases)](https://github.com/KoishiMoe/nonebot-plugin-mediawiki/releases)
 ![GitHub contributors](https://img.shields.io/github/contributors/KoishiMoe/nonebot-plugin-mediawiki)
 ![GitHub Repo stars](https://img.shields.io/github/stars/KoishiMoe/nonebot-plugin-mediawiki?style=social)
+
+</div>
 
 ------
 
@@ -166,7 +170,7 @@ bot管理员可以设置全局的wiki，全局wiki的设计意图在于回落，
 如果返回了错误的结果，可以使用小括号查询来绕过api。
 
 在某些情况下，你可能希望限制调用频率，如目标Wiki的api调用频率限制严格，或者目标wiki的防火墙会阻断高频请求 ~~（萌百：你报我域名算了）~~ 。
-为简化查询流程，本插件并不提供对应功能，在Flandre的开发计划中有全局的频率限制组件，可以用于此用途。如果你将本插件独立使用，可以考虑使用其他频率限制插件来解决。
+为简化查询流程，本插件并不提供对应功能，~~(不然频率限制比核心功能代码还长了)~~ 。如果确有需求，可以考虑使用[Flandre](https://github.com/KoishiMoe/Flandre) ，她带有频率限制以及适配了频率限制的wiki组件。如果你将本插件独立使用，可以考虑使用其他频率限制插件来解决（不过nonebot目前似乎还没有这类插件……）。
 
 根据我个人在一些wiki项目的QQ群观摩 ~~（潜伏）~~  的经验来说，群bot的wiki功能被调用的频率并不会很高，因此除非你将bot同时置于多个群，
 并且都连接到同一个wiki,或者有人恶意利用bot（事实上由于bot不响应私聊的查询请求，要达到这种效果只能在群聊中刷屏），不然碰上调用频率限制的可能性还是很低的
