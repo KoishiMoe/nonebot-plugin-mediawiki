@@ -40,7 +40,7 @@ RAW = r"\(\((.*?)\)\)"
 wiki = on_regex(ARTICLE_RAW, permission=GROUP)
 wiki_template = on_regex(TEMPLATE, permission=GROUP)
 wiki_raw = on_regex(RAW, permission=GROUP)
-wiki_quick = on_command("wiki", permission=GROUP, priority=2)  # 设个更低的优先级，省着和设置管理器抢（虽然似乎不设也不会抢2333
+wiki_quick = on_command("wiki ", permission=GROUP, priority=2)  # 设个更低的优先级，省着和设置管理器抢（虽然似乎不设也不会抢2333
 
 
 @wiki.handle()
@@ -61,7 +61,7 @@ async def _wiki_raw(bot: Bot, event: GroupMessageEvent):
 
 @wiki_quick.handle()
 async def _wiki_quick(bot: Bot, event: GroupMessageEvent, raw_command: Optional[str] = RawCommand()):
-    if raw_command and raw_command.endswith("wiki"):  # 防止选择式的消息及无关消息被误加括号
+    if raw_command and raw_command.endswith("wiki "):  # 防止选择式的消息及无关消息被误加括号
         message = str(event.message).strip().removeprefix(raw_command).strip()
         event2 = event.copy()  # 浅拷贝一下，省着篡改消息后把其他插件弄懵了～
         event2.message = Message("[[" + message + "]]")
