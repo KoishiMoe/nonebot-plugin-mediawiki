@@ -9,11 +9,9 @@ from nonebot.log import logger
 
 from .exception import HTTPTimeoutError, MediaWikiException, MediaWikiGeoCoordError, PageError
 
-'''
-代码主要来自 pymediawiki 库（以MIT许可证开源），并根据bot的实际需要做了一些修改
-该库的Github地址：https://github.com/barrust/mediawiki
-许可证：https://github.com/barrust/mediawiki/blob/master/LICENSE
-'''
+# 代码主要来自 pymediawiki 库（以MIT许可证开源），并根据bot的实际需要做了一些修改
+# 该库的Github地址：https://github.com/barrust/mediawiki
+# 许可证：https://github.com/barrust/mediawiki/blob/master/LICENSE
 
 USER_AGENT: str = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0'
 ODD_ERROR_MESSAGE = (
@@ -25,7 +23,7 @@ ClientTimeout = aiohttp.ClientTimeout
 
 class Mwapi:
     def __init__(self, url: str, api_url: str = '', ua: str = USER_AGENT,
-                 timeout: ClientTimeout = ClientTimeout(total=30)):
+                 timeout: ClientTimeout = ClientTimeout(total=10)):
         self._api_url = api_url
         self._url = url
         self._timeout = timeout
@@ -52,13 +50,12 @@ class Mwapi:
         # get response
         try:
             resp = await session.get(self._api_url, params=params, headers=headers, timeout=self._timeout)
+            resp_dict = await resp.json()
         except TimeoutError:
             await session.close()
             raise HTTPTimeoutError(query='')
-
-        await session.close()
-
-        resp_dict = await resp.json()
+        finally:
+            await session.close()
 
         return resp_dict
 

@@ -4,8 +4,8 @@ from urllib import parse
 import nonebot
 from aiohttp.client_exceptions import ContentTypeError
 
-from .mwapi import Mwapi
 from .exception import MediaWikiException, MediaWikiGeoCoordError, HTTPTimeoutError, PageError
+from .mwapi import Mwapi
 
 
 class Wiki:
@@ -31,9 +31,12 @@ class Wiki:
             exception = "连接超时"
         except (MediaWikiException, MediaWikiGeoCoordError, ContentTypeError) as e:  # ContentTypeError：非json内容
             exception = "Api调用出错"
-            nonebot.logger.warning(e)
+            nonebot.logger.info(f"MediaWiki API 返回了错误信息：{e}")
         except PageError:
             exception = "未找到页面"
+        except Exception as e:
+            exception = "未知错误"
+            nonebot.logger.warning(f"MediaWiki API 发生了未知异常：{e}")
         if "exception" in locals():
             special, result = await self.url_parse(title)
             result_dict = {
