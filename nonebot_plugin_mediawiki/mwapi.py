@@ -248,7 +248,7 @@ class Mwapi:
 
     async def _handle_interwiki(self, query):
         inter_wiki = query["interwiki"][0]
-        self._title = inter_wiki.get("title", '').removeprefix(f'{inter_wiki.get("iw", "")}:')
+        self._title = inter_wiki.get("title", '')[len(f'{inter_wiki.get("iw", "")}:'):]
         self._page_url = inter_wiki.get("url", '')
         self._interwiki = True
 

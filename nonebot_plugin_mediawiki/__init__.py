@@ -62,7 +62,7 @@ async def _wiki_raw(bot: Bot, event: GroupMessageEvent):
 @wiki_quick.handle()
 async def _wiki_quick(bot: Bot, event: GroupMessageEvent, raw_command: Optional[str] = RawCommand()):
     if raw_command and raw_command.endswith("wiki "):  # 防止选择式的消息及无关消息被误加括号
-        message = str(event.message).strip().removeprefix(raw_command).strip()
+        message = str(event.message).strip()[len(raw_command.strip()):].lstrip()
         event2 = event.copy()  # 浅拷贝一下，省着篡改消息后把其他插件弄懵了～
         event2.message = Message("[[" + message + "]]")
         await wiki_process(bot, event2, wiki_quick, is_template=False)
