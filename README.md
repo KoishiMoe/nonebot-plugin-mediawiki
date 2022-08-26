@@ -32,6 +32,9 @@ _适用于 [NoneBot2](https://v2.nonebot.dev) 的 MediaWiki 查询插件_
 本项目是 [Flandre](https://github.com/KoishiMoe/Flandre) 的
 [wiki](https://github.com/KoishiMoe/Flandre/tree/main/src/plugins/wiki) 组件，经简单修改成为独立插件发布
 
+## 旧版本用户请注意
+本插件在1.0版本进行了一次重构，同时更改了设置命令的语法（查询不受影响），请阅读文档的相应部分
+
 ## 用途
 一般来说最需要wikibot的大概是一些wiki项目的交流群，不过鉴于这种群通常都有大佬在，写个bot自然不是什么难事的说～
 所以我在本插件开发时更注重于在一般的群聊中能起作用的功能，供交流问题时快速引用。例如游戏的交流群，可能需要经常在wiki上查找角色信息、游戏特性等，
@@ -53,15 +56,15 @@ _适用于 [NoneBot2](https://v2.nonebot.dev) 的 MediaWiki 查询插件_
 
 绕过api查询条目： `((条目名))` `((prefix:条目名))`
 
-添加（全局）Wiki： `wiki.add` `wiki.add.global`
+'添加：wiki.add <前缀> <api地址（可选）> <通用url地址> < -g（添加该参数表示操作全局wiki)>'
 
-删除（全局）Wiki： `wiki.delete` `wiki.delete.global`
+'删除：wiki.delete <前缀> < -g >'
 
-修改（全局）默认Wiki： `wiki.default` `wiki.default.global`
+'列表：wiki.list < -g >'
 
-查看Wiki列表： `wiki.list` `wiki.list.global`
+'设置默认：wiki.default <前缀> < -g >'
 
-**其中所有非全局指令均需要在目标群中进行，所有全局指令均只有Bot管理员能执行**
+**其中所有非全局指令均需要在目标群中进行，所有全局指令（除查询）均只有Bot管理员能执行**
 
 ### 查询功能
 
@@ -78,9 +81,7 @@ _适用于 [NoneBot2](https://v2.nonebot.dev) 的 MediaWiki 查询插件_
 Bot会尝试去调取目标wiki的api,并获取对应标题的页面信息（默认允许重定向、跨wiki、简繁转换）。如果未找到对应条目，或者对应页面是消歧义页面，
 则会提供数字来选择。如果调用api失败或者未配置api，会回落到字符串拼接的方式生成链接。
 
-```plaintext
-Tip：如果api返回的结果不是你想要的，可以使用半角小括号包裹条目名以绕过api，如 ((帮助))
-```
+> Tip：如果api返回的结果不是你想要的，可以使用半角小括号包裹条目名以绕过api，如 ((帮助))
 
 当绑定了多个wiki时，需要指定前缀以查询默认wiki之外的wiki，例如，假如将某个wiki的前缀设置为flan，且不是默认wiki，则查询命令对应为[[flan:帮助]]
 
@@ -91,24 +92,23 @@ Tip：如果api返回的结果不是你想要的，可以使用半角小括号�
   * 语法：`wiki.list`
   * 返回：当前群绑定的wiki列表，以及全局wiki列表
 
-#### 单个群的管理
-
-以下操作均需在目标群内进行，bot管理员和群管理员均有权限操作
 
 * 添加wiki
   * 语法 `wiki.add`
   * 参数：
     * 前缀：用于区分wiki的前缀，仅支持字母、数字和下划线，不能和本群已有的重复，但可以和全局已有的重复，此时本地设置优先。另外，为了防止和mediawiki的名字空间冲突，bot默认屏蔽了部分名字空间名作为前缀的能力，也请在绑定前先了解目标wiki的名字空间情况。
-    * api地址（可选）：目标wiki的mediawiki api的地址。某些wiki可能限制api调用，此时可以回复`0`来不设置api。该地址通常可以在目标wiki的`Special:版本#接入点URL`页面中找到。或者也可以尝试这些一般的格式：
-    ```plaintext
-    https://www.example.org/api.php （如萌娘百科）
-    https://www.example.org/w/api.php (如维基百科）
-    ```
+    * api地址（可选）：目标wiki的mediawiki api的地址。某些wiki可能限制api调用，此时可以不设置api。该地址通常可以在目标wiki的`Special:版本#接入点URL`页面中找到。或者也可以尝试这些一般的格式：
+    
+    > https://www.example.org/api.php （如萌娘百科）
+    >     
+    > https://www.example.org/w/api.php (如维基百科）
+    
     * 通用url：目标wiki的条目路径。通常来讲，在该url后加上正确的条目名即可访问目标条目。可以在目标wiki的`Special:版本#接入点URL`中找到（“条目路径”中的$1即条目名）
-    ```plaintext
-    例如，对维基百科：https://www.example.org/wiki
-    对萌百等：https://www.example.org/
-    ```
+    
+    > 例如，对维基百科：https://www.example.org/wiki
+    >
+    > 对萌百等：https://www.example.org/
+    
 
 
 * 删除wiki
@@ -121,28 +121,9 @@ Tip：如果api返回的结果不是你想要的，可以使用半角小括号�
   * 语法 `wiki.default`
     * 参数：
       * 前缀：要设置默认的wiki的前缀
-  ```plaintext
-  Tip：本群/全局绑定的的一个wiki将被自动设置为本地/全局的默认wiki,当本地/全局绑定的默认wiki被删除时会自动清除对应的默认wiki设置，无需手动操作。
-  ```
-
-
-#### 全局管理
-
-以下操作可以在群内进行，也可以私聊进行，只有bot管理员有权限操作
-
-* 添加全局wiki
-  * 语法：`wiki.add.global`
-    * 参数同上
-
-
-* 删除全局wiki
-  * 语法：`wiki.delete.global`
-    * 参数同上
-
-
-* 设置全局默认wiki
-  * 语法：`wiki.default.global`
-    * 参数同上
+  
+  > Tip：本群/全局绑定的的一个wiki将被自动设置为本地/全局的默认wiki,当本地/全局绑定的默认wiki被删除时会自动清除对应的默认wiki设置，无需手动操作。
+  
 
 ### 附加说明
 #### 本地和全局
@@ -152,15 +133,11 @@ bot管理员可以设置全局的wiki，全局wiki的设计意图在于回落，
 1. 本地没有绑定任何wiki
 2. 本地没有设置默认前缀，而查询请求中又不包含前缀
 
-```plaintext
-注意：如果本地有和全局默认前缀相同的wiki时，本地的wiki仍将被优先调用
-```
+> 注意：如果本地有和全局默认前缀相同的wiki时，本地的wiki仍将被优先调用
 
 3. 本地设置了默认前缀，但是本地不存在该wiki
 
-```plaintext
-注意：当前缀在全局中也不存在时，前缀将被视为名字空间，直接和条目名一并传入api进行查询
-```
+> 注意：当前缀在全局中也不存在时，前缀将被视为名字空间，直接和条目名一并传入api进行查询
 
 4. 查询请求中包含的前缀在本地不存在
 
