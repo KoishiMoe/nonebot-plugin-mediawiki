@@ -3,7 +3,7 @@ from io import StringIO
 
 
 # 从 Flandre 里拆出来的解析器，用于解析命令和参数
-def process_command(command: str, user_input: str) -> tuple[list[str], dict[str, str | bool]]:
+def process_command(command: str, user_input: str) -> tuple:
     """
     :param command: 命令本体
     :param user_input: 用户输入
@@ -54,7 +54,7 @@ def _get_item(ls: list, item: int):
         return None
 
 
-def _startswith(string: str | None, prefix: str) -> bool:
+def _startswith(string: str, prefix: str) -> bool:
     """
     替换原版的startswith方法
     :param string: 要检测的字符串
