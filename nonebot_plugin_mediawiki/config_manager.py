@@ -36,7 +36,7 @@ async def _add_wiki(bot: Bot, event: MessageEvent, raw_command: str = RawCommand
 
     # parse params
     if len(param_list) <= 1:
-        await add_wiki.finish("请输入正确的参数！格式为： wiki.add <前缀> <API地址（可选）> <回落地址> < -g （添加该参数修改全局）>")
+        await add_wiki.finish("请输入正确的参数！格式为： wiki.add <前缀> <API地址（可选）> <条目路径> < -g （添加该参数修改全局）>")
         return  # 糊弄下IDE
     elif len(param_list) == 2:
         prefix = param_list[0].strip().lower()
@@ -49,11 +49,11 @@ async def _add_wiki(bot: Bot, event: MessageEvent, raw_command: str = RawCommand
 
     # check params
     if url.endswith('api.php'):
-        await add_wiki.finish("参数错误！如果您只提供了一个地址，则其必须是回落地址而非api地址")
+        await add_wiki.finish("参数错误！如果您只提供了一个地址，则其必须是条目路径而非api地址")
     if api and not re.match(r'^https?:/{2}\w.+$', api):
         await add_wiki.finish("非法的api地址，请重新输入！")
     if not re.match(r'^https?:/{2}\w.+$', url):
-        await add_wiki.finish("非法的回落地址，请重新输入！")
+        await add_wiki.finish("非法的条目路径，请重新输入！")
     if prefix in reserved or ":" in prefix or "：" in prefix:
         await add_wiki.finish("该前缀为保留前缀或含有非法字符，请重新输入！")
 
@@ -68,7 +68,7 @@ async def _add_wiki(bot: Bot, event: MessageEvent, raw_command: str = RawCommand
                 continue
         if not success:
             await add_wiki.finish("无法连接到wiki，请检查api地址是否正确！如果确认无误，可能是网络故障或者防火墙拦截，"
-                                  "您可以不提供api地址，直接提供回落地址即可")
+                                  "您可以不提供api地址，直接提供条目路径即可")
 
     # 进行插入操作
     group_id = event.group_id if isinstance(event, GroupMessageEvent) else 0
