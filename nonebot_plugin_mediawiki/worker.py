@@ -2,9 +2,10 @@ import re
 from asyncio import TimeoutError
 from urllib import parse
 
+import nonebot
 from aiohttp import ContentTypeError
 from nonebot import on_regex, on_command, logger
-from nonebot.adapters.onebot.v11 import Bot, utils, GroupMessageEvent, GROUP
+from nonebot.adapters.onebot.v11 import Bot, utils, GroupMessageEvent, GROUP, MessageSegment
 from nonebot.internal.matcher import Matcher
 from nonebot.typing import T_State
 
@@ -23,18 +24,36 @@ from .mediawiki.exceptions import InterWikiError, MediaWikiAPIURLError, MediaWik
 # 已有的MediaWiki实例
 wiki_instances = {}
 
+playwright = None
+browser = None
+playwright_not_installed = False
+playwright_launch_error = False
+
+
+@nonebot.get_driver().on_shutdown
+async def shutdown():
+    global playwright, browser
+    if browser:
+        await browser.close()
+        browser = None
+    if playwright:
+        playwright.stop()
+        playwright = None
 
 # 响应器
+# TODO: use matcher group
 wiki_article = on_regex(ARTICLE_RAW, permission=GROUP, state={"mode": "article"})
 wiki_template = on_regex(TEMPLATE, permission=GROUP, state={"mode": "template"})
 wiki_raw = on_regex(RAW, permission=GROUP, state={"mode": "raw"})
 wiki_quick = on_command("wiki ", permission=GROUP, state={"mode": "quick"})
+wiki_shot = on_command("wiki.shot ", permission=GROUP, state={"mode": "shot"})
 
 
 @wiki_article.handle()
 @wiki_template.handle()
 @wiki_raw.handle()
 @wiki_quick.handle()
+@wiki_shot.handle()
 async def wiki_preprocess(bot: Bot, event: GroupMessageEvent, state: T_State, matcher: Matcher):
     message = utils.unescape(str(event.message).strip())
     mode = state["mode"]
@@ -46,11 +65,36 @@ async def wiki_preprocess(bot: Bot, event: GroupMessageEvent, state: T_State, ma
     elif mode == "raw":
         title = re.findall(RAW, message)
         state["is_raw"] = True
-    else:
+    elif mode == "quick":
         title = message[4:].lstrip()
         if not title:
             await matcher.finish()
         title = [title]
+    elif mode == "shot":
+        global playwright, browser, playwright_launch_error, playwright_not_installed
+        if not playwright:
+            if playwright_not_installed:
+                await matcher.finish("Playwright未安装")
+            if playwright_launch_error:
+                await matcher.finish("Playwright启动失败，如果您已安装Chromium，请重启Bot")
+            try:
+                from playwright.async_api import async_playwright, Error
+                playwright = await async_playwright().start()
+                if not browser:
+                    try:
+                        browser = await playwright.chromium.launch()
+                    except Error:
+                        await matcher.finish("Playwright启动失败，请检查是否安装了Chromium")
+                        playwright_launch_error = True
+            except ImportError:
+                await matcher.finish("Playwright未安装")
+                playwright_not_installed = True
+
+        title = message[9:].lstrip()
+        if not title:
+            await matcher.finish()
+        title = [title]
+        state["is_shot"] = True
 
     if not title:
         await matcher.finish()
@@ -62,6 +106,7 @@ async def wiki_preprocess(bot: Bot, event: GroupMessageEvent, state: T_State, ma
 @wiki_template.got("title", "请从上面选择一项，或回复0来根据原标题直接生成链接，回复”取消“退出")
 @wiki_raw.got("title", "请从上面选择一项，或回复0来根据原标题直接生成链接，回复”取消“退出")
 @wiki_quick.got("title", "请从上面选择一项，或回复0来根据原标题直接生成链接，回复”取消“退出")
+@wiki_shot.got("title", "请从上面选择一项，或回复0来根据原标题直接生成链接，回复”取消“退出")
 async def wiki_parse(bot: Bot, event: GroupMessageEvent, state: T_State, matcher: Matcher):
     # 标记
     page = None
@@ -191,7 +236,28 @@ async def wiki_parse(bot: Bot, event: GroupMessageEvent, state: T_State, matcher
         except Exception as e:
             exception = "未知错误"
             logger.warning(f"MediaWiki API 发生了未知异常：{e}")
-            page = dummy_instance.page(title=title)
+            page = await dummy_instance.page(title=title)
+
+    if not exception and state.get("mode") == "shot":
+        if browser:
+            try:
+                pg = await browser.new_page()
+                try:
+                    await pg.set_viewport_size({"width": 1920, "height": 1080})
+                    await pg.goto(page.url)  # 默认30s,应该够了……大概
+                    img = await pg.screenshot(full_page=True, type="jpeg", quality=80)
+                    await matcher.send(MessageSegment.image(img))
+                except TimeoutError:
+                    logger.warning(f"页面{page.url}加载超时")
+                    exception = "截图失败：页面加载超时"
+                except Exception as e:
+                    logger.warning(f"截图时发生了错误：{e}")
+                    exception = "截图失败：页面加载失败"
+                finally:
+                    await pg.close()
+            except Exception as e:
+                logger.warning(f"截图时发生了错误：{e}")
+                exception = "截图失败"
 
     result = f"错误：{exception}\n" if exception else ""
     if page.title != title:
