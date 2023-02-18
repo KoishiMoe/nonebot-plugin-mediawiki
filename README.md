@@ -220,3 +220,35 @@ bot管理员可以设置全局的wiki，全局wiki的设计意图在于回落，
 
 根据我个人在一些wiki项目的QQ群观摩 ~~（潜伏）~~  的经验来说，群bot的wiki功能被调用的频率并不会很高，因此除非你将bot同时置于多个群，
 并且都连接到同一个wiki,或者有人恶意利用bot（事实上由于bot不响应私聊的查询请求，要达到这种效果只能在群聊中刷屏），不然碰上调用频率限制的可能性还是很低的
+
+#### 截图功能
+
+本插件支持截图功能，但是需要额外安装依赖。如果你不需要截图功能，可以跳过这一节。
+
+```shell
+# 激活虚拟环境
+# linux, venv
+source venv/bin/activate
+# windows, venv
+venv\Scripts\activate.bat
+# 安装playwright（本插件将playwright列为了可选依赖，因此需要手动安装）
+pip install playwright
+# 安装chromium
+playwright install chromium
+# 对于无头linux服务器，建议安装完整的chromium以补全缺失的依赖
+# Ubuntu
+sudo apt install chromium-browser
+# CentOS
+sudo yum install chromium
+# Arch
+sudo pacman -S chromium
+```
+
+需要注意的是，当前版本的插件硬编码使用chromium。如果您确实需要使用其他浏览器，可以自行修改`worker.py`中的相关语句。
+
+当前该功能**仍处于测试阶段**，不建议在生产环境中使用。以下是一些您可能需要注意的问题：
+* chromium会占用大量服务器资源，如果您的服务器配置较低，可能会导致bot无法正常运行。如果您的服务器配置较低，建议不要使用截图功能。
+* 本插件对输出的内容没有过滤，您可能需要考虑安全性问题（例如，如果您的bot在公开群中使用，可能会被恶意利用来发送一些不适合在某些地区显示的内容）。
+* 某些wiki有奇怪的弹窗、广告等，也有些wiki的防火墙比较严格，或者有人机验证等，可能会导致无头浏览器无法正常获取页面。 ~~（e.g.某萌百几条都占了）~~
+* 恶意的群成员可能会利用一些wiki的特殊页面来获取bot的服务器ip等敏感信息
+* 攻击者可能会利用浏览器漏洞来入侵服务器

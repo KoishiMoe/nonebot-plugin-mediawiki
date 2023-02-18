@@ -17,6 +17,6 @@ __usage__ = '使用：\n' \
             '注意：私聊状态下该插件仅会响应超管的命令，且仅能管理全局wiki\n' \
             '完整文档请前往 https://github.com/KoishiMoe/nonebot-plugin-mediawiki 查看'
 
-__help_version__ = '1.1.0-alpha'
+__help_version__ = '1.1.0-alpha.2'
 
 __help_plugin_name__ = 'Wiki推送'

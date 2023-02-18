@@ -72,25 +72,29 @@ async def wiki_preprocess(bot: Bot, event: GroupMessageEvent, state: T_State, ma
         title = [title]
     elif mode == "shot":
         global playwright, browser, playwright_launch_error, playwright_not_installed
+        if playwright_not_installed:
+            await matcher.finish("Playwright未安装")
+        if playwright_launch_error:
+            await matcher.finish("Playwright启动失败，如果您已安装Chromium，请重启Bot")
         if not playwright:
-            if playwright_not_installed:
-                await matcher.finish("Playwright未安装")
-            if playwright_launch_error:
-                await matcher.finish("Playwright启动失败，如果您已安装Chromium，请重启Bot")
             try:
                 from playwright.async_api import async_playwright, Error
                 playwright = await async_playwright().start()
                 if not browser:
                     try:
                         browser = await playwright.chromium.launch()
-                    except Error:
-                        await matcher.finish("Playwright启动失败，请检查是否安装了Chromium")
+                    except Error as e:
+                        playwright_launch_error = True
                         logger.warning("Playwright启动失败，请检查是否安装了Chromium\n"
                                        "安装方法：在bot的虚拟环境中执行：playwright install chromium")
-                        playwright_launch_error = True
+                        logger.warning("注意：对于无头服务器，您可能需要使用系统的包管理器安装完整版的Chromium以保证系统中有可用的依赖\n"
+                                       "例如：在Ubuntu 20.04中，您可以使用apt安装：sudo apt install chromium-browser\n"
+                                       "在Archlinux中，您可以使用pacman安装：sudo pacman -S chromium")
+                        logger.warning(f"下面是Playwright的错误信息，可能对您有帮助：\n{e}")
+                        await matcher.finish("Playwright启动失败，请检查是否安装了Chromium")
             except ImportError:
-                await matcher.finish("Playwright未安装")
                 playwright_not_installed = True
+                await matcher.finish("Playwright未安装")
 
         title = message[9:].lstrip()
         if not title:
