@@ -85,6 +85,8 @@ async def wiki_preprocess(bot: Bot, event: GroupMessageEvent, state: T_State, ma
                         browser = await playwright.chromium.launch()
                     except Error:
                         await matcher.finish("Playwright启动失败，请检查是否安装了Chromium")
+                        logger.warning("Playwright启动失败，请检查是否安装了Chromium\n"
+                                       "安装方法：在bot的虚拟环境中执行：playwright install chromium")
                         playwright_launch_error = True
             except ImportError:
                 await matcher.finish("Playwright未安装")
