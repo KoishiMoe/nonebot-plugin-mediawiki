@@ -66,18 +66,16 @@ ETA：无
 <details>
 <summary>这个插件和其他wiki插件有什么不同吗？</summary>
 
-* 在我发布这个插件时，nonebot还没有这类插件，而我在的群用得上这个，因此就顺便搓了一个发布了。现在nb市场也有些其他的wiki插件（或者包含wiki功能的bot），
+在我发布这个插件时，nonebot还没有这类插件，而我在的群用得上这个，因此就顺便搓了一个发布了。现在nb市场也有些其他的wiki插件（或者包含wiki功能的bot），
 其中的一些是适配特定wiki的，不具有通用性（但它们可能适配了本插件无法适配的wiki，例如scpwiki——它使用的系统是wikidot，且不开放api）；
 另一些（目前插件市场里只有一个，叫nonebot-plugin-wiki）同样针对mediawiki设计，意味着它们和本插件的功能在相当程度上可能是重叠的，
 此时你可以比较差异功能、更新频率、兼容性、稳定性等选择适合自己的（例如前面提到的插件，接入了bwiki的api，可以获取bwiki上条目的简介之类）
-* 而对于其他的bot平台，我了解的只有koishi，上面有小鱼君写的koishi-plugin-mediawiki，
-这个插件应当是为wiki编辑交流群设计的，单个群只能绑定一个wiki，且只能使用api查询 ~~（这样被萌百娘WAF之后就会直接炸掉）~~
 </details>
 
 <details>
 <summary>MediaWiki是啥？API是啥？条目路径是啥？</summary>
 
-* MediaWiki是维基媒体基金会 ~~（喂鸡霉体鸡精会）~~ 开发的一套wiki引擎，大名鼎鼎的维基百科就是由它驱动的。
+* MediaWiki是维基媒体基金会开发的一套wiki引擎，大名鼎鼎的维基百科就是由它驱动的。
 目前世界上有很多wiki网站均使用不同版本的该引擎驱动，尤其是很多游戏、动漫等的wiki
 * 本插件提到的API都指MediaWiki的API。利用API，bot可以与wiki站点通信，来快速从wiki站点获取想要的信息。在本插件中，bot就利用api搜索指定标题是否存在、
 获取页面的链接、查询消歧义义项等。
@@ -97,7 +95,7 @@ ETA：无
 <details>
 <summary>查询命令怎么这么奇怪</summary>
 
-* ~~因为别人都是这样整的~~ 因为MediaWiki中，同wiki内部互相引用条目用的就是双方括号，引用模板则是双花括号，这样设计是为了和wiki保持一致。
+* 因为MediaWiki中，同wiki内部互相引用条目用的就是双方括号，引用模板则是双花括号，这样设计是为了和wiki保持一致。
 * 至于圆括号，MediaWiki中确实没有，不过上面都用了其他两种括号了，下面用圆括号也比较自然（确信）
 * 为了方便手机查询 (issue#1) ，本插件也有简化的条目查询命令，即 `wiki xxx`
 </details>
@@ -215,28 +213,33 @@ bot管理员可以设置全局的wiki，全局wiki的设计意图在于回落，
 为了提供更准确的结果，默认情况下bot会调用mediawiki api查询条目。当api无法正常调用时，会使用通用url和条目名拼接作为回落。
 如果返回了错误的结果，可以使用小括号查询来绕过api。
 
-在某些情况下，你可能希望限制调用频率，如目标Wiki的api调用频率限制严格，或者目标wiki的防火墙会阻断高频请求 ~~（萌百：你报我域名算了）~~ 。
-为简化查询流程，本插件并不提供对应功能，~~(不然频率限制比核心功能代码还长了)~~ 。如果确有需求，可以考虑使用[Flandre](https://github.com/KoishiMoe/Flandre) ，她带有频率限制以及适配了频率限制的wiki组件。如果你将本插件独立使用，可以考虑使用其他频率限制插件来解决（不过nonebot目前似乎还没有这类插件……）。
-
-根据我个人在一些wiki项目的QQ群观摩 ~~（潜伏）~~  的经验来说，群bot的wiki功能被调用的频率并不会很高，因此除非你将bot同时置于多个群，
-并且都连接到同一个wiki,或者有人恶意利用bot（事实上由于bot不响应私聊的查询请求，要达到这种效果只能在群聊中刷屏），不然碰上调用频率限制的可能性还是很低的
-
 #### 截图功能
 
 本插件支持截图功能，但是需要额外安装依赖。如果你不需要截图功能，可以跳过这一节。
 
+* 如果你还没安装该插件
+```shell
+pip install nonebot-plugin-mediawiki[shot] 
+```
+这样，pip会在安装该插件时自动安装截图功能所需的依赖（目前仅有playwright）
+
+* 如果你已经安装了该插件，则需要在安装了该插件的虚拟环境中安装playwright
 ```shell
 # 激活虚拟环境
 # linux, venv
 source venv/bin/activate
 # windows, venv
 venv\Scripts\activate.bat
-# 安装playwright（本插件将playwright列为了可选依赖，因此需要手动安装）
+# 安装playwright
 pip install playwright
+```
+
+* 然后再安装chromium
+```shell
 # 安装chromium
 playwright install chromium
-# 对于无头linux服务器，建议安装完整的chromium以补全缺失的依赖
-# Ubuntu
+# 对于无头linux服务器，建议在系统中安装完整的chromium以补全缺失的依赖
+# Debian / Ubuntu
 sudo apt install chromium-browser
 # CentOS
 sudo yum install chromium
@@ -247,8 +250,8 @@ sudo pacman -S chromium
 需要注意的是，当前版本的插件硬编码使用chromium。如果您确实需要使用其他浏览器，可以自行修改`worker.py`中的相关语句。
 
 当前该功能**仍处于测试阶段**，不建议在生产环境中使用。以下是一些您可能需要注意的问题：
-* chromium会占用大量服务器资源，如果您的服务器配置较低，可能会导致bot无法正常运行。如果您的服务器配置较低，建议不要使用截图功能。
+* chromium会占用大量服务器资源，如果您的服务器配置较低，建议不要使用截图功能。
 * 本插件对输出的内容没有过滤，您可能需要考虑安全性问题（例如，如果您的bot在公开群中使用，可能会被恶意利用来发送一些不适合在某些地区显示的内容）。
-* 某些wiki有奇怪的弹窗、广告等，也有些wiki的防火墙比较严格，或者有人机验证等，可能会导致无头浏览器无法正常获取页面。 ~~（e.g.某萌百几条都占了）~~
+* 某些wiki有奇怪的弹窗、广告等，也有些wiki的防火墙比较严格，或者有人机验证等，可能会导致无头浏览器无法正常获取页面。
 * 恶意的群成员可能会利用一些wiki的特殊页面来获取bot的服务器ip等敏感信息
-* 攻击者可能会利用浏览器漏洞来入侵服务器
+* 攻击者可能会利用浏览器漏洞来入侵服务器，建议定期更新playwright和chromium
