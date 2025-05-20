@@ -1,4 +1,6 @@
+import os
 import re
+import urllib.parse
 from asyncio import TimeoutError
 from urllib import parse
 
@@ -82,7 +84,16 @@ async def wiki_preprocess(bot: Bot, event: GroupMessageEvent, state: T_State, ma
                 playwright = await async_playwright().start()
                 if not browser:
                     try:
-                        browser = await playwright.chromium.launch()
+                        if os.getenv("WIKI_PROXY"):
+                            p = urllib.parse.urlparse(os.getenv("WIKI_PROXY"))
+                            proxy = {
+                                "server": f"{p.scheme}://{p.hostname}:{p.port}",
+                                "username": p.username,
+                                "password": p.password
+                            }
+                            browser = await playwright.chromium.launch(proxy=proxy)
+                        else:
+                            browser = await playwright.chromium.launch()
                     except Error as e:
                         playwright_launch_error = True
                         logger.warning("Playwright启动失败，请检查是否安装了Chromium\n"
@@ -181,7 +192,10 @@ async def wiki_parse(bot: Bot, event: GroupMessageEvent, state: T_State, matcher
             else:
                 if api:
                     try:
-                        wiki_instance = await MediaWiki.create(url=api)
+                        if os.getenv("WIKI_PROXY"):
+                            wiki_instance = await MediaWiki.create(url=api, proxies=os.getenv("WIKI_PROXY"))
+                        else:
+                            wiki_instance = await MediaWiki.create(url=api)
                         wiki_instances[api] = wiki_instance
                     except (MediaWikiBaseException, TimeoutError) as e:
                         logger.info(f"连接到MediaWiki API 时发生了错误：{e}")

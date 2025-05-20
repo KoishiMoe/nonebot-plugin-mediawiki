@@ -1,3 +1,5 @@
+from dotenv import load_dotenv
+
 from . import config_manager
 from . import worker
 
@@ -20,3 +22,5 @@ __usage__ = '使用：\n' \
 __help_version__ = '1.1.1'
 
 __help_plugin_name__ = 'Wiki推送'
+
+load_dotenv()

@@ -2,4 +2,6 @@
 
 该fork本身依然以MIT许可证授权，仓库地址为：https://github.com/KoishiMoe/pymediawiki-async 。本目录中包含LICENSE文件是为了符合MIT许可证的要求，而本项目（nonebot-plugin-mediawiki）的许可不受其影响。
 
-在测试完善之后，我将会将其单独发布到pypi，并不再与本插件捆绑发布。
+~~在测试完善之后，我将会将其单独发布到pypi，并不再与本插件捆绑发布。~~
+
+Edit：如果需要异步支持的话建议用原生支持异步的那些库吧，这个是之前不会写协程的时候乱写的……

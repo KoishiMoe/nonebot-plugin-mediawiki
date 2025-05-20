@@ -60,7 +60,7 @@ ETA：无
   > 
   > B: 参考[[钓鱼#垃圾与宝藏]]
   > 
-  > Bot: https://minecraft.fandom.com/zh/index.php?curid=10554#%E5%9E%83%E5%9C%BE%E4%B8%8E%E5%AE%9D%E8%97%8F
+  > Bot: https://zh.minecraft.wiki/w/%E9%92%93%E9%B1%BC#%E5%9E%83%E5%9C%BE%E4%B8%8E%E5%AE%9D%E8%97%8F
 </details>
 
 <details>
@@ -212,6 +212,24 @@ bot管理员可以设置全局的wiki，全局wiki的设计意图在于回落，
 
 为了提供更准确的结果，默认情况下bot会调用mediawiki api查询条目。当api无法正常调用时，会使用通用url和条目名拼接作为回落。
 如果返回了错误的结果，可以使用小括号查询来绕过api。
+
+#### 使用代理
+
+如果你需要使用代理来优化某些wiki的访问速度，可以在`.env`文件中设置`WIKI_PROXY`环境变量，该变量的值为代理地址，格式为`scheme://(user:password@)host:port`，例如：
+
+```dotenv
+WIKI_PROXY=http://127.0.0.1:1080
+```
+
+```dotenv
+WIKI_PROXY=socks5://user:mysecret@example.org:11451
+```
+
+该变量会被传递给aiohttp和playwright，因此可以用于本插件中的所有网络请求。
+
+> 注意：该代理设置不支持按wiki分流，即所有wiki的请求都会使用同一个代理。如果你有此类需求，建议使用代理客户端内置的分流功能，它们通常会提供更灵活的配置选项。
+> 
+> 由于众所周知的原因，传播某些需要代理才能访问的wiki内的内容可能影响帐号安全，请谨慎添加此类wiki，或者使用保证内容合法的境内镜像站（如有）
 
 #### 截图功能
 

@@ -3,6 +3,7 @@ from io import StringIO
 
 
 # 从 Flandre 里拆出来的解析器，用于解析命令和参数
+# TODO: 用argparse吧……谁手搓这玩意
 def process_command(command: str, user_input: str) -> tuple:
     """
     :param command: 命令本体
