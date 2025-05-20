@@ -1,5 +1,6 @@
 import csv
 from io import StringIO
+from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
 
 
 # 从 Flandre 里拆出来的解析器，用于解析命令和参数
@@ -68,3 +69,41 @@ def _startswith(string: str, prefix: str) -> bool:
         if string.startswith(i):
             return True
     return False
+
+def ensure_url_param(url, host_to_check, param_name, param_value):
+    """
+    Check if URL is under a specific host and add a specific parameter if not present.
+
+    Args:
+        url (str): The URL to check
+        host_to_check (str): The host to match (e.g., "example.com")
+        param_name (str): The parameter to check for and potentially add
+        param_value (str): The value to use if parameter needs to be added
+
+    Returns:
+        str: The original or modified URL
+    """
+    parsed_url = urlparse(url)
+
+    # Check if URL is under the specific host
+    if parsed_url.netloc == host_to_check or parsed_url.netloc.endswith('.' + host_to_check):
+        # Parse query parameters
+        query_params = parse_qs(parsed_url.query)
+
+        # Check if the specific parameter exists
+        if param_name not in query_params:
+            # Parameter doesn't exist, let's add it
+            query_params[param_name] = [param_value]
+
+            # Rebuild the query string
+            new_query = urlencode(query_params, doseq=True)
+
+            # Rebuild the URL with the new query string
+            modified_url = urlunparse(
+                (parsed_url.scheme, parsed_url.netloc, parsed_url.path,
+                 parsed_url.params, new_query, parsed_url.fragment)
+            )
+            return modified_url
+
+    # Return original URL if host doesn't match or parameter already exists
+    return url

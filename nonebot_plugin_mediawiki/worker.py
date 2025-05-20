@@ -22,6 +22,7 @@ from .fakemwapi import DummyMediaWiki, DummyPage
 from .mediawiki import MediaWiki, HTTPTimeoutError, MediaWikiException, MediaWikiGeoCoordError, PageError, \
     DisambiguationError
 from .mediawiki.exceptions import InterWikiError, MediaWikiAPIURLError, MediaWikiBaseException
+from .utilities import ensure_url_param
 
 # 已有的MediaWiki实例
 wiki_instances = {}
@@ -264,7 +265,8 @@ async def wiki_parse(bot: Bot, event: GroupMessageEvent, state: T_State, matcher
                 pg = await browser.new_page()
                 try:
                     await pg.set_viewport_size({"width": 1920, "height": 1080})
-                    await pg.goto(page.url)  # 默认30s,应该够了……大概
+                    u = ensure_url_param(page.url, "moegirl.org.cn", "useskin", "vector") if not os.getenv("MOEGIRL_USE_NEW_SKIN") else page.url
+                    await pg.goto(u)  # 默认30s,应该够了……大概
                     img = await pg.screenshot(full_page=True, type="jpeg", quality=80)
                     await matcher.send(MessageSegment.image(img))
                 except TimeoutError:
