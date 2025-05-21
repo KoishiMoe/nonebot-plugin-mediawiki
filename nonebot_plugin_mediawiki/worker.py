@@ -272,7 +272,11 @@ async def wiki_parse(bot: Bot, event: GroupMessageEvent, state: T_State, matcher
                         timeout = float(nonebot.get_driver().config.wiki_shot_timeout)
                     except AttributeError:
                         timeout = 30.0
-                    await pg.goto(u, timeout=timeout)
+                    try:
+                        wait_until = nonebot.get_driver().config.wiki_shot_wait_until
+                    except AttributeError:
+                        wait_until = "load"
+                    await pg.goto(u, timeout=timeout, wait_until=wait_until)
                     img = await pg.screenshot(full_page=True, type="jpeg", quality=80)
                     await matcher.send(MessageSegment.image(img))
                 except TimeoutError:

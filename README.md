@@ -291,6 +291,8 @@ sudo yum install chromium
 sudo pacman -S chromium
 ```
 
+* 页面加载设置
+
 如果需要调整页面加载时间限制（默认30秒），可以在`.env`文件中设置`WIKI_SHOT_TIMEOUT`环境变量，单位为秒，例如：
 
 ```dotenv
@@ -298,6 +300,14 @@ WIKI_SHOT_TIMEOUT=60
 ```
 
 无头浏览器操作的时间内，bot不会向用户发送进度消息，因此过长的超时时间可能被认为是无响应，调整时间限制时请注意这一点。
+
+如果需要调整何时进行截图，可以在`.env`文件中设置`WIKI_SHOT_WAIT_UNTIL`环境变量，有效值有`load`、`domcontentloaded`、`networkidle`、`commit`，例如：
+
+```dotenv
+WIKI_SHOT_WAIT_UNTIL=networkidle
+```
+
+请参考[playwright文档](https://playwright.dev/python/docs/api/class-page#page-goto)获取这些值的具体含义
 
 需要注意的是，当前版本的插件硬编码使用chromium。如果您确实需要使用其他浏览器，可以自行修改`worker.py`中的相关语句。
 
