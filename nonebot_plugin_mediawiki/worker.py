@@ -5,7 +5,7 @@ from asyncio import TimeoutError
 from urllib import parse
 
 import nonebot
-from aiohttp import ContentTypeError
+from aiohttp import ContentTypeError, ClientProxyConnectionError, ClientConnectorError
 from nonebot import on_regex, on_command, logger
 from nonebot.adapters.onebot.v11 import Bot, utils, GroupMessageEvent, GROUP, MessageSegment
 from nonebot.internal.matcher import Matcher
@@ -200,9 +200,9 @@ async def wiki_parse(bot: Bot, event: GroupMessageEvent, state: T_State, matcher
                         else:
                             wiki_instance = await MediaWiki.create(url=api)
                         wiki_instances[api] = wiki_instance
-                    except (MediaWikiBaseException, TimeoutError) as e:
+                    except (MediaWikiBaseException, TimeoutError, ClientProxyConnectionError, ConnectionRefusedError, AssertionError, ClientConnectorError) as e:
                         logger.info(f"连接到MediaWiki API 时发生了错误：{e}")
-                        exception = "连接超时"
+                        exception = "Api连接失败"
                         wiki_instance = dummy_instance
                 else:  # 没api地址就算了
                     wiki_instance = dummy_instance

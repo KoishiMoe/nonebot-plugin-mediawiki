@@ -7,6 +7,7 @@ from nonebot.adapters.onebot.v11.permission import GROUP_OWNER, GROUP_ADMIN
 from nonebot.params import RawCommand
 from nonebot.permission import SUPERUSER
 from nonebot.typing import T_State
+from nonebot.log import logger
 
 from .config import Config
 from .mediawiki import MediaWiki, MediaWikiAPIURLError
@@ -69,6 +70,9 @@ async def _add_wiki(bot: Bot, event: MessageEvent, raw_command: str = RawCommand
                 break
             except (MediaWikiAPIURLError, TimeoutError):
                 continue
+            except Exception as e:
+                logger.error(f"添加wiki时发生错误：{e}")
+                await add_wiki.finish("因未知错误无法连接到api，请bot管理员检查日志")
         if not success:
             await add_wiki.finish("无法连接到wiki，请检查api地址是否正确！如果确认无误，可能是网络故障或者防火墙拦截，"
                                   "您可以不提供api地址，直接提供条目路径即可")
