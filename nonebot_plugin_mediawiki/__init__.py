@@ -34,3 +34,19 @@ if get_driver().config.model_dump().get("wiki_proxy", None):
     logger.info(f"Wiki: using proxy {get_driver().config.wiki_proxy}")
 else:
     get_driver().config.wiki_proxy = None
+
+
+try:
+    from nonebot.plugin import PluginMetadata
+
+    __plugin_meta__ = PluginMetadata(
+        name="Wiki推送",
+        description="适用于 nonebot2 的 MediaWiki 查询插件",
+        usage=__usage__,
+        homepage="https://github.com/KoishiMoe/nonebot-plugin-mediawiki",
+        type="application",
+        extra={},
+        supported_adapters={"~onebot.v11"},
+    )
+except ImportError:
+    pass
