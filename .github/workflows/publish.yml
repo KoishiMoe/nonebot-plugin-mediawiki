@@ -6,10 +6,12 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Upload Python Package
+name: Build and Upload Python Package
 
 on:
   push:
+    branches:
+      - main
     paths-ignore:
       - '**/*.md'
     tags-ignore:
