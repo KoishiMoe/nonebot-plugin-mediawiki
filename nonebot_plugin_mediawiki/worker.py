@@ -268,7 +268,11 @@ async def wiki_parse(bot: Bot, event: GroupMessageEvent, state: T_State, matcher
                 try:
                     await pg.set_viewport_size({"width": 1920, "height": 1080})
                     u = ensure_url_param(page.url, "moegirl.org.cn", "useskin", "vector") if not os.getenv("MOEGIRL_USE_NEW_SKIN") else page.url
-                    await pg.goto(u)  # 默认30s,应该够了……大概
+                    try:
+                        timeout = float(nonebot.get_driver().config.wiki_shot_timeout)
+                    except AttributeError:
+                        timeout = 30.0
+                    await pg.goto(u, timeout=timeout)
                     img = await pg.screenshot(full_page=True, type="jpeg", quality=80)
                     await matcher.send(MessageSegment.image(img))
                 except TimeoutError:
