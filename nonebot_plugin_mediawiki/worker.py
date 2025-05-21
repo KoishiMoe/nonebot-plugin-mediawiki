@@ -85,8 +85,9 @@ async def wiki_preprocess(bot: Bot, event: GroupMessageEvent, state: T_State, ma
                 playwright = await async_playwright().start()
                 if not browser:
                     try:
-                        if os.getenv("WIKI_PROXY"):
-                            p = urllib.parse.urlparse(os.getenv("WIKI_PROXY"))
+                        p = nonebot.get_driver().config.wiki_proxy
+                        if p:
+                            p = urllib.parse.urlparse(p)
                             proxy = {
                                 "server": f"{p.scheme}://{p.hostname}:{p.port}",
                                 "username": p.username,
@@ -193,8 +194,9 @@ async def wiki_parse(bot: Bot, event: GroupMessageEvent, state: T_State, matcher
             else:
                 if api:
                     try:
-                        if os.getenv("WIKI_PROXY"):
-                            wiki_instance = await MediaWiki.create(url=api, proxies=os.getenv("WIKI_PROXY"))
+                        p = nonebot.get_driver().config.wiki_proxy
+                        if p:
+                            wiki_instance = await MediaWiki.create(url=api, proxies=p)
                         else:
                             wiki_instance = await MediaWiki.create(url=api)
                         wiki_instances[api] = wiki_instance

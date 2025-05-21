@@ -1,4 +1,6 @@
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
+
+from nonebot import logger, get_driver
 
 from . import config_manager
 from . import worker
@@ -19,8 +21,16 @@ __usage__ = '使用：\n' \
             '注意：私聊状态下该插件仅会响应超管的命令，且仅能管理全局wiki\n' \
             '完整文档请前往 https://github.com/KoishiMoe/nonebot-plugin-mediawiki 查看'
 
-__help_version__ = '1.1.1'
+__help_version__ = '1.2.2'
 
 __help_plugin_name__ = 'Wiki推送'
 
-load_dotenv()
+# load_dotenv()  # Dont do this, nonebot has its own logic.
+
+# if os.getenv("WIKI_PROXY"):
+#     logger.info(f"Wiki: using proxy {os.getenv('WIKI_PROXY')}")
+
+if get_driver().config.model_dump().get("wiki_proxy", None):
+    logger.info(f"Wiki: using proxy {get_driver().config.wiki_proxy}")
+else:
+    get_driver().config.wiki_proxy = None

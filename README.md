@@ -227,6 +227,32 @@ WIKI_PROXY=socks5://user:mysecret@example.org:11451
 
 该变量会被传递给aiohttp和playwright，因此可以用于本插件中的所有网络请求。
 
+如果`.env`文件中的配置无法正常生效，你也可以：
+
+a) 在系统环境变量中添加代理设置
+```shell
+# windows cmd
+set WIKI_PROXY 'http://127.0.0.1:1080'
+# windows powershell
+$Env:WIKI_PROXY='http://127.0.0.1:1080'
+# linux/macOS
+export WIKI_PROXY='http://127.0.0.1:1080'
+```
+
+b) 在bot的入口文件（通常是`bot.py`）中对`config.wiki_proxy`直接赋值：
+```python
+import nonebot
+
+# 初始化时
+nonebot.init(wiki_proxy="http://127.0.0.1:1080")
+
+# 或者在初始化后
+config = nonebot.get_driver().config
+config.wiki_proxy = "socks5://user:pass@proxy.example.org"
+```
+
+请参考[nonebot文档](https://nonebot.dev/docs/appendices/config#%E9%85%8D%E7%BD%AE%E9%A1%B9%E7%9A%84%E5%8A%A0%E8%BD%BD)获取更多信息
+
 > 注意：该代理设置不支持按wiki分流，即所有wiki的请求都会使用同一个代理。如果你有此类需求，建议使用代理客户端内置的分流功能，它们通常会提供更灵活的配置选项。
 > 
 > 由于众所周知的原因，传播某些需要代理才能访问的wiki内的内容可能影响帐号安全，请谨慎添加此类wiki，或者使用保证内容合法的境内镜像站（如有）

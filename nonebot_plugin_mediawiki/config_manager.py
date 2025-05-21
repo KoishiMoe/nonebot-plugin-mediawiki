@@ -1,4 +1,3 @@
-import os
 import re
 from asyncio import TimeoutError
 
@@ -62,8 +61,8 @@ async def _add_wiki(bot: Bot, event: MessageEvent, raw_command: str = RawCommand
         success = False
         for i in range(3):
             try:
-                if os.getenv("WIKI_PROXY"):
-                    await MediaWiki.create(url=api, timeout=10, proxies=os.getenv("WIKI_PROXY"))
+                if get_driver().config.wiki_proxy:
+                    await MediaWiki.create(url=api, timeout=10, proxies=get_driver().config.wiki_proxy)
                 else:
                     await MediaWiki.create(url=api, timeout=10)
                 success = True
