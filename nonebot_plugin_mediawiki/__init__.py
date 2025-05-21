@@ -30,9 +30,9 @@ __help_plugin_name__ = 'Wiki推送'
 # if os.getenv("WIKI_PROXY"):
 #     logger.info(f"Wiki: using proxy {os.getenv('WIKI_PROXY')}")
 
-if get_driver().config.model_dump().get("wiki_proxy", None):
+try:
     logger.info(f"Wiki: using proxy {get_driver().config.wiki_proxy}")
-else:
+except AttributeError:
     get_driver().config.wiki_proxy = None
 
 
