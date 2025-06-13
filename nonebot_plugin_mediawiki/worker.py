@@ -72,7 +72,10 @@ async def wiki_preprocess(bot: Bot, event: GroupMessageEvent, state: T_State, ma
         title = message.split(" ", maxsplit=1)
         if not title or len(title) < 2:
             await matcher.finish()
-        title = [title[1]]
+        title = title[1].lstrip()
+        if not title:
+            await matcher.finish()
+        title = [title]
     elif mode == "shot":
         global playwright, browser, playwright_launch_error, playwright_not_installed
         if playwright_not_installed:
@@ -112,7 +115,10 @@ async def wiki_preprocess(bot: Bot, event: GroupMessageEvent, state: T_State, ma
         title = message.split(" ", maxsplit=1)
         if not title or len(title) < 2:
             await matcher.finish()
-        title = [title[1]]
+        title = title[1].lstrip()
+        if not title:
+            await matcher.finish()
+        title = [title]
         state["is_shot"] = True
 
     if not title:
