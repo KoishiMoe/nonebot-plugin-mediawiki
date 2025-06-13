@@ -69,10 +69,10 @@ async def wiki_preprocess(bot: Bot, event: GroupMessageEvent, state: T_State, ma
         title = re.findall(RAW, message)
         state["is_raw"] = True
     elif mode == "quick":
-        title = message[4:].lstrip()
-        if not title:
+        title = message.split(" ", maxsplit=1)
+        if not title or len(title) < 2:
             await matcher.finish()
-        title = [title]
+        title = [title[1]]
     elif mode == "shot":
         global playwright, browser, playwright_launch_error, playwright_not_installed
         if playwright_not_installed:
@@ -109,10 +109,10 @@ async def wiki_preprocess(bot: Bot, event: GroupMessageEvent, state: T_State, ma
                 playwright_not_installed = True
                 await matcher.finish("Playwright未安装")
 
-        title = message[9:].lstrip()
-        if not title:
+        title = message.split(" ", maxsplit=1)
+        if not title or len(title) < 2:
             await matcher.finish()
-        title = [title]
+        title = [title[1]]
         state["is_shot"] = True
 
     if not title:
