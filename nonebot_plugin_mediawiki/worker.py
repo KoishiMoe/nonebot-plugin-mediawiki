@@ -273,7 +273,11 @@ async def wiki_parse(bot: Bot, event: GroupMessageEvent, state: T_State, matcher
                 pg = await browser.new_page()
                 try:
                     await pg.set_viewport_size({"width": 1920, "height": 1080})
-                    u = ensure_url_param(page.url, "moegirl.org.cn", "useskin", "vector") if not os.getenv("MOEGIRL_USE_NEW_SKIN") else page.url
+                    u = page.url
+                    if not os.getenv("MOEGIRL_USE_NEW_SKIN"):
+                        if re.match(r'https?://zh\.moegirl\.org\.cn/.*', u):
+                            u.replace("zh.moegirl.org.cn", "mzh.moegirl.org.cn", count=1)  # the administrators have removed legacy skin support on desktop site
+                        u = ensure_url_param(u, "moegirl.org.cn", "useskin", "vector-2022")
                     try:
                         timeout = float(nonebot.get_driver().config.wiki_shot_timeout)
                     except AttributeError:

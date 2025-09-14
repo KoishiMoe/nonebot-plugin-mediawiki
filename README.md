@@ -317,3 +317,26 @@ WIKI_SHOT_WAIT_UNTIL=networkidle
 * 某些wiki有奇怪的弹窗、广告等，也有些wiki的防火墙比较严格，或者有人机验证等，可能会导致无头浏览器无法正常获取页面。
 * 恶意的群成员可能会利用一些wiki的特殊页面来获取bot的服务器ip等敏感信息
 * 攻击者可能会利用浏览器漏洞来入侵服务器，建议定期更新playwright和chromium
+
+#### 对特定wiki的附加功能
+
+为个别wiki添加了特殊的处理逻辑，以绕过某些限制或提升查询体验。截至目前只适配了某娘百科
+
+##### 萌百
+
+鉴于该wiki的新皮肤中出现大量干扰元素以及动效，影响截图效果并在某些设备上带来严重卡顿，故插件会自动在截图前，在url尾部添加`useskin=vector`参数以强制使用较为简洁的vector皮肤
+
+> 2025年暑期更新：萌百管理员已在桌面版中彻底删除了vector皮肤，但目前在移动端中，其继任者`vector-2022`皮肤仍暂时可用。由于`vector-2022`支持响应式布局，在宽屏设备使用移动端网站（`mzh`)并不会影响显示效果，因此插件会默认将所有萌百的截图请求重定向到移动端并使用`vector-2022`皮肤
+
+如果你不希望插件对萌百进行这些特殊处理，可以添加以下环境变量来禁用这一行为：
+
+```dotenv
+MOEGIRL_USE_NEW_SKIN=true
+```
+
+<details>
+<summary>What can I say?</summary>
+
+[![](https://i.imgur.com/Hl7qrOz.png)](https://mzh.moegirl.org.cn/index.php?curid=511920&oldid=7072039&useskin=vector-2022)
+[![](https://i.imgur.com/GHlyae7.png)](https://zh.moegirl.org.cn/Special:Preferences)
+</details>
