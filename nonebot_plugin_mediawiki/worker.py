@@ -29,6 +29,7 @@ wiki_instances = {}
 
 playwright = None
 browser = None
+browser_context = None
 playwright_not_installed = False
 playwright_launch_error = False
 
@@ -77,7 +78,7 @@ async def wiki_preprocess(bot: Bot, event: GroupMessageEvent, state: T_State, ma
             await matcher.finish()
         title = [title]
     elif mode == "shot":
-        global playwright, browser, playwright_launch_error, playwright_not_installed
+        global playwright, browser, browser_context, playwright_launch_error, playwright_not_installed
         if playwright_not_installed:
             await matcher.finish("Playwright未安装")
         if playwright_launch_error:
@@ -99,6 +100,23 @@ async def wiki_preprocess(bot: Bot, event: GroupMessageEvent, state: T_State, ma
                             browser = await playwright.chromium.launch(proxy=proxy)
                         else:
                             browser = await playwright.chromium.launch()
+
+                        try:
+                            lang = nonebot.get_driver().config.wiki_shot_browser_language
+                        except AttributeError:
+                            lang = "zh-CN"
+                        try:
+                            width = int(nonebot.get_driver().config.wiki_shot_browser_width)
+                        except (AttributeError, ValueError):
+                            width = 1920
+                        try:
+                            height = int(nonebot.get_driver().config.wiki_shot_browser_height)
+                        except (AttributeError, ValueError):
+                            height = 1080
+                        browser_context = await browser.new_context(
+                            locale=lang,
+                            viewport={"width": width, "height": height},
+                        )
                     except Error as e:
                         playwright_launch_error = True
                         logger.warning("Playwright启动失败，请检查是否安装了Chromium\n"
@@ -270,11 +288,14 @@ async def wiki_parse(bot: Bot, event: GroupMessageEvent, state: T_State, matcher
     if not exception and state.get("mode") == "shot":
         if browser:
             try:
-                pg = await browser.new_page()
+                pg = await browser_context.new_page()
                 try:
-                    await pg.set_viewport_size({"width": 1920, "height": 1080})
                     u = page.url
-                    if not os.getenv("MOEGIRL_USE_NEW_SKIN"):
+                    try:
+                        use_vector = str(nonebot.get_driver().config.moegirl_use_new_skin).lower() == "true"
+                    except AttributeError:
+                        use_vector = True
+                    if use_vector:
                         if re.match(r'https?://zh\.moegirl\.org\.cn/.*', u):
                             u.replace("zh.moegirl.org.cn", "mzh.moegirl.org.cn", count=1)  # the administrators have removed legacy skin support on desktop site
                         u = ensure_url_param(u, "moegirl.org.cn", "useskin", "vector-2022")

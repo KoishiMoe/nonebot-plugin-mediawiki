@@ -291,7 +291,22 @@ sudo yum install chromium
 sudo pacman -S chromium
 ```
 
-* 页面加载设置
+* 页面设置
+
+如果需要调整截图时浏览器窗口的大小，可以在`.env`文件中设置`WIKI_SHOT_WIDTH`和`WIKI_SHOT_HEIGHT`环境变量，例如：
+
+```dotenv
+WIKI_SHOT_WIDTH=408
+WIKI_SHOT_HEIGHT=785
+```
+
+将窗口大小设置为更小的值可以减少截图时的资源占用，并在支持响应式布局的wiki中获得更适合阅读的页面布局。但对优化不好的wiki来说，可能会导致部分内容无法正常显示。
+
+如果需要调整浏览器的默认语言，可以在`.env`文件中设置`WIKI_SHOT_BROWSER_LANGUAGE`环境变量，例如：
+
+```dotenv
+WIKI_SHOT_BROWSER_LANGUAGE=zh-CN
+```
 
 如果需要调整页面加载时间限制（默认30秒），可以在`.env`文件中设置`WIKI_SHOT_TIMEOUT`环境变量，单位为秒，例如：
 

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nonebot-plugin-mediawiki"
-version = "1.2.5"
+version = "1.2.6-beta.1"
 description = "nonebot2 mediawiki 查询插件"
 authors = ["KoishiMoe <68314080+KoishiMoe@users.noreply.github.com>"]
 license = "AGPL-3.0-or-later"
