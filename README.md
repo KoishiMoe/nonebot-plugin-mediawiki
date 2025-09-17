@@ -346,7 +346,7 @@ WIKI_SHOT_WAIT_UNTIL=networkidle
 如果你不希望插件对萌百进行这些特殊处理，可以添加以下环境变量来禁用这一行为：
 
 ```dotenv
-MOEGIRL_USE_NEW_SKIN=true
+WIKI_MOEGIRL_USE_NEW_SKIN=true
 ```
 
 <details>

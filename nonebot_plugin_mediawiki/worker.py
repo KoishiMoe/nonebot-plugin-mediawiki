@@ -292,7 +292,7 @@ async def wiki_parse(bot: Bot, event: GroupMessageEvent, state: T_State, matcher
                 try:
                     u = page.url
                     try:
-                        use_vector = str(nonebot.get_driver().config.moegirl_use_new_skin).lower() == "true"
+                        use_vector = str(nonebot.get_driver().config.wiki_moegirl_use_new_skin).lower() != "true"
                     except AttributeError:
                         use_vector = True
                     if use_vector:
