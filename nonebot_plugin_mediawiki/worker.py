@@ -324,8 +324,47 @@ async def wiki_parse(bot: Bot, event: GroupMessageEvent, state: T_State, matcher
                     except AttributeError:
                         wait_until = "load"
                     await pg.goto(u, timeout=timeout*1000, wait_until=wait_until)
-                    img = await pg.screenshot(full_page=True, type="jpeg", quality=80)
-                    await matcher.send(MessageSegment.image(img))
+
+                    split = 0
+                    try:
+                        split = int(nonebot.get_driver().config.wiki_shot_split_pages)
+                    except AttributeError:
+                        pass
+                    except ValueError:
+                        logger.warning("wiki_shot_split_pages 配置项格式错误，已回落到默认值 0")
+                    if split > 0:
+                        page_num = 1
+                        fail_count = 0
+
+                        viewport_height = page.evaluate("window.innerHeight")
+                        last_scroll_y = -1
+                        while True:
+                            current_scroll_y = page.evaluate("window.scrollY")
+                            if current_scroll_y == last_scroll_y:
+                                # logger.debug("页面滚动完成")
+                                break
+                            last_scroll_y = current_scroll_y
+
+                            try:
+                                await matcher.send(MessageSegment.image(await pg.screenshot(full_page=False, type="jpeg", quality=80)))
+                                page_num += 1
+                                fail_count = 0
+
+                                if page_num > split:
+                                    logger.info("已达到最大分割页数，终止截图")
+                                    break
+                            except Exception as e:
+                                logger.warning(f"截图时发生了错误：{e}")
+                                fail_count += 1
+                                if fail_count >=3:
+                                    logger.warning("连续三次截图失败，终止截图")
+                                    raise e
+                                continue
+                            await pg.evaluate(f"window.scrollBy(0, {viewport_height});")
+                            await pg.wait_for_timeout(250)
+                    else:
+                        img = await pg.screenshot(full_page=True, type="jpeg", quality=80)
+                        await matcher.send(MessageSegment.image(img))
                 except TimeoutError:
                     logger.warning(f"页面{page.url}加载超时")
                     exception = "截图失败：页面加载超时"

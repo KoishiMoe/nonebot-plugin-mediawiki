@@ -322,6 +322,16 @@ WIKI_SHOT_WAIT_UNTIL=networkidle
 
 请参考[playwright文档](https://playwright.dev/python/docs/api/class-page#page-goto)获取这些值的具体含义
 
+如果要分页截图，可以在`.env`文件中设置`WIKI_SHOT_SPLIT_PAGES`环境变量，表示最大允许的分页数量，例如：
+
+```dotenv
+WIKI_SHOT_SPLIT_PAGES=20  # 允许最多20页
+```
+
+默认值是0，表示不分页截图。每个页面的长宽由上面提到的`WIKI_SHOT_WIDTH`和`WIKI_SHOT_HEIGHT`控制。
+
+> 注意：部分wiki使用的自定义皮肤可能无法正确分页，导致分页逻辑陷入死循环，因此请根据自己的需求设定一个合理的最大值
+
 * 使用其他浏览器
 
 如果你想使用firefox或webkit进行截图，可以在`.env`文件中设置`WIKI_SHOT_BROWSER`环境变量，例如：
