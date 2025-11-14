@@ -278,13 +278,11 @@ venv\Scripts\activate.bat
 pip install playwright
 ```
 
-* 然后再安装chromium
+* 然后再安装chromium（或firefox/webkit，如需使用其他浏览器，请参考后续说明设置环境变量）
 ```shell
 # 安装chromium
-playwright install chromium
-# 对于无头linux服务器，建议在系统中安装完整的chromium以补全缺失的依赖
-# Debian / Ubuntu
-sudo apt install chromium-browser
+playwright install --with-deps chromium
+# 如果你的系统不被playwright官方支持，可以尝试只安装浏览器（不带上面的--with-deps参数），然后使用发行版的包管理器安装完整的chromium以满足依赖。但请注意发行版的chromium版本和playwright的可能不一致，带来兼容性问题
 # CentOS
 sudo yum install chromium
 # Arch
@@ -324,7 +322,20 @@ WIKI_SHOT_WAIT_UNTIL=networkidle
 
 请参考[playwright文档](https://playwright.dev/python/docs/api/class-page#page-goto)获取这些值的具体含义
 
-需要注意的是，当前版本的插件硬编码使用chromium。如果您确实需要使用其他浏览器，可以自行修改`worker.py`中的相关语句。
+* 使用其他浏览器
+如果你想使用firefox或webkit进行截图，可以在`.env`文件中设置`WIKI_SHOT_BROWSER`环境变量，例如：
+
+```dotenv
+WIKI_SHOT_BROWSER=firefox  # 或者 webkit
+```
+
+> 注意：
+> 
+> 1. 切换浏览器后，需要重新安装浏览器以及其依赖。例如，使用firefox时，需要运行`playwright install --with-deps firefox`来安装firefox浏览器及其依赖
+> 
+> 2. 虽然mediawiki对主流浏览器的支持都还不错，但部分wiki有自定义的脚本和样式，这些脚本和样式可能只针对chromium进行了优化，使用其他浏览器时可能会出现显示异常的情况，还请注意
+> 
+> 3. 虽然chrome经常因其高占用而被诟病，但这并不代表它的竞争对手就一定更省资源。由于chrome的市场地位，它往往是各大网站优化的重点对象，使用其他浏览器时可能会遇到更高的资源占用
 
 当前该功能**仍处于测试阶段**，不建议在生产环境中使用。以下是一些您可能需要注意的问题：
 * chromium会占用大量服务器资源，如果您的服务器配置较低，建议不要使用截图功能。

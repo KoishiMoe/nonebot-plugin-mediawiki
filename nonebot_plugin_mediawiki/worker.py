@@ -89,6 +89,17 @@ async def wiki_preprocess(bot: Bot, event: GroupMessageEvent, state: T_State, ma
                 playwright = await async_playwright().start()
                 if not browser:
                     try:
+                        selected_browser = nonebot.get_driver().config.wiki_shot_browser.lower()
+                    except AttributeError:
+                        selected_browser = "chromium"
+                    if selected_browser not in ["chromium", "firefox", "webkit"]:
+                        selected_browser = "chromium"
+                        logger.warning(f"不支持的浏览器选项 {selected_browser} ，已回落到 chromium")
+                    try:
+                        launch_arguments = {
+                            "headless": True,
+                        }
+
                         p = nonebot.get_driver().config.wiki_proxy
                         if p:
                             p = urllib.parse.urlparse(p)
@@ -97,9 +108,14 @@ async def wiki_preprocess(bot: Bot, event: GroupMessageEvent, state: T_State, ma
                                 "username": p.username,
                                 "password": p.password
                             }
-                            browser = await playwright.chromium.launch(proxy=proxy)
+                            launch_arguments["proxy"] = proxy
+
+                        if selected_browser == "firefox":
+                            browser = await playwright.firefox.launch(**launch_arguments)
+                        elif selected_browser == "webkit":
+                            browser = await playwright.webkit.launch(**launch_arguments)
                         else:
-                            browser = await playwright.chromium.launch()
+                            browser = await playwright.chromium.launch(**launch_arguments)
 
                         try:
                             lang = nonebot.get_driver().config.wiki_shot_browser_language
