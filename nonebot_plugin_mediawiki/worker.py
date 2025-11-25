@@ -336,10 +336,10 @@ async def wiki_parse(bot: Bot, event: GroupMessageEvent, state: T_State, matcher
                         page_num = 1
                         fail_count = 0
 
-                        viewport_height = pg.evaluate("window.innerHeight")
+                        viewport_height = await pg.evaluate("window.innerHeight")
                         last_scroll_y = -1
                         while True:
-                            current_scroll_y = pg.evaluate("window.scrollY")
+                            current_scroll_y = await pg.evaluate("window.scrollY")
                             if current_scroll_y == last_scroll_y:
                                 # logger.debug("页面滚动完成")
                                 break
