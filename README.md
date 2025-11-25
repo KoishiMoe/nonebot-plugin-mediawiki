@@ -291,11 +291,11 @@ sudo pacman -S chromium
 
 * 页面设置
 
-如果需要调整截图时浏览器窗口的大小，可以在`.env`文件中设置`WIKI_SHOT_WIDTH`和`WIKI_SHOT_HEIGHT`环境变量，例如：
+如果需要调整截图时浏览器窗口的大小，可以在`.env`文件中设置`WIKI_SHOT_BROWSER_WIDTH`和`WIKI_SHOT_BROWSER_HEIGHT`环境变量，例如：
 
 ```dotenv
-WIKI_SHOT_WIDTH=408
-WIKI_SHOT_HEIGHT=785
+WIKI_SHOT_BROWSER_WIDTH=408
+WIKI_SHOT_BROWSER_HEIGHT=785
 ```
 
 将窗口大小设置为更小的值可以减少截图时的资源占用，并在支持响应式布局的wiki中获得更适合阅读的页面布局。但对优化不好的wiki来说，可能会导致部分内容无法正常显示。
@@ -328,7 +328,7 @@ WIKI_SHOT_WAIT_UNTIL=networkidle
 WIKI_SHOT_SPLIT_PAGES=20  # 允许最多20页
 ```
 
-默认值是0，表示不分页截图。每个页面的长宽由上面提到的`WIKI_SHOT_WIDTH`和`WIKI_SHOT_HEIGHT`控制。
+默认值是0，表示不分页截图。每个页面的长宽由上面提到的`WIKI_SHOT_BROWSER_WIDTH`和`WIKI_SHOT_BROWSER_HEIGHT`控制。
 
 > 注意：部分wiki使用的自定义皮肤可能无法正确分页，导致分页逻辑陷入死循环，因此请根据自己的需求设定一个合理的最大值
 
