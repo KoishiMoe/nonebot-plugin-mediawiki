@@ -1,5 +1,3 @@
-import asyncio
-import os
 import re
 import urllib.parse
 from asyncio import TimeoutError
