@@ -1,3 +1,4 @@
+import asyncio
 import os
 import re
 import urllib.parse
@@ -346,6 +347,7 @@ async def wiki_parse(bot: Bot, event: GroupMessageEvent, state: T_State, matcher
                             last_scroll_y = current_scroll_y
 
                             try:
+                                # TODO: 把截出来的图提交到另一个线程中发送，并实现重试等
                                 await matcher.send(MessageSegment.image(await pg.screenshot(full_page=False, type="jpeg", quality=80)))
                                 page_num += 1
                                 fail_count = 0
