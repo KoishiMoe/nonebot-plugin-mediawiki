@@ -32,6 +32,9 @@ browser_context = None
 playwright_not_installed = False
 playwright_launch_error = False
 
+WIDTH = 1920
+HEIGHT = 1080
+
 
 @nonebot.get_driver().on_shutdown
 async def shutdown():
@@ -128,6 +131,9 @@ async def wiki_preprocess(bot: Bot, event: GroupMessageEvent, state: T_State, ma
                             height = int(nonebot.get_driver().config.wiki_shot_browser_height)
                         except (AttributeError, ValueError):
                             height = 1080
+                        global WIDTH, HEIGHT
+                        WIDTH = width
+                        HEIGHT = height
                         browser_context = await browser.new_context(
                             locale=lang,
                             viewport={"width": width, "height": height},
@@ -332,36 +338,58 @@ async def wiki_parse(bot: Bot, event: GroupMessageEvent, state: T_State, matcher
                     except ValueError:
                         logger.warning("wiki_shot_split_pages 配置项格式错误，已回落到默认值 0")
                     if split > 0:
-                        page_num = 1
-                        fail_count = 0
+                        # Use a small initial height to load content first
+                        initial_height = 800
+                        await pg.set_viewport_size({"width": WIDTH, "height": initial_height})
 
-                        viewport_height = await pg.evaluate("window.innerHeight")
-                        last_scroll_y = -1
-                        while True:
-                            current_scroll_y = await pg.evaluate("window.scrollY")
-                            if current_scroll_y == last_scroll_y:
-                                # logger.debug("页面滚动完成")
-                                break
-                            last_scroll_y = current_scroll_y
+                        # Calculate actual content height
+                        # https://stackoverflow.com/a/1147768
+                        content_height = await pg.evaluate(
+                            "Math.max(document.body.scrollHeight, document.body.offsetHeight, "
+                            "document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight );")
 
-                            try:
-                                # TODO: 把截出来的图提交到另一个线程中发送，并实现重试等
-                                await matcher.send(MessageSegment.image(await pg.screenshot(full_page=False, type="jpeg", quality=80)))
-                                page_num += 1
-                                fail_count = 0
+                        # Get configured max height (use the browser height config as max)
+                        max_height = HEIGHT
 
-                                if page_num > split:
-                                    logger.info("已达到最大分割页数，终止截图")
+                        if content_height > max_height:
+                            # Content exceeds max height, use split logic
+                            await pg.set_viewport_size({"width": WIDTH, "height": max_height})
+
+                            page_num = 1
+                            fail_count = 0
+
+                            viewport_height = await pg.evaluate("window.innerHeight")
+                            last_scroll_y = -1
+                            while True:
+                                current_scroll_y = await pg.evaluate("window.scrollY")
+                                if current_scroll_y == last_scroll_y:
+                                    # logger.debug("页面滚动完成")
                                     break
-                            except Exception as e:
-                                logger.warning(f"截图时发生了错误：{e}")
-                                fail_count += 1
-                                if fail_count >=3:
-                                    logger.warning("连续三次截图失败，终止截图")
-                                    raise e
-                                continue
-                            await pg.evaluate(f"window.scrollBy(0, {viewport_height});")
-                            await pg.wait_for_timeout(250)
+                                last_scroll_y = current_scroll_y
+
+                                try:
+                                    # TODO: 把截出来的图提交到另一个线程中发送，并实现重试等
+                                    await matcher.send(MessageSegment.image(await pg.screenshot(full_page=False, type="jpeg", quality=80)))
+                                    page_num += 1
+                                    fail_count = 0
+
+                                    if page_num > split:
+                                        logger.info("已达到最大分割页数，终止截图")
+                                        break
+                                except Exception as e:
+                                    logger.warning(f"截图时发生了错误：{e}")
+                                    fail_count += 1
+                                    if fail_count >=3:
+                                        logger.warning("连续三次截图失败，终止截图")
+                                        raise e
+                                    continue
+                                await pg.evaluate(f"window.scrollBy(0, {viewport_height});")
+                                await pg.wait_for_timeout(250)
+                        else:
+                            # Content fits within max height, take single screenshot
+                            await pg.set_viewport_size({"width": WIDTH, "height": content_height})
+                            img = await pg.screenshot(full_page=True, type="jpeg", quality=80)
+                            await matcher.send(MessageSegment.image(img))
                     else:
                         img = await pg.screenshot(full_page=True, type="jpeg", quality=80)
                         await matcher.send(MessageSegment.image(img))
